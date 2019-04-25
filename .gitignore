@@ -7,6 +7,8 @@ Assets/AssetStoreTools*
 
 # Things we do not want
 Assets/Models/Cartoon SportCar B01/
+Assets/Models/Tree/
+Assets/Models/Tree02/
 
 # Visual Studio cache directory
 .vs/
