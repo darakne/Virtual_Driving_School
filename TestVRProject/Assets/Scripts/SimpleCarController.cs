@@ -12,7 +12,7 @@ public class AxleInfo
     public GameObject leftWheelMesh;
     public GameObject rightWheelMesh;
     public bool motor;
-    public bool steering;
+    public bool steering; //the thing the front wheels do when you rotate the steering wheel
 }
 
 public class SimpleCarController : MonoBehaviour

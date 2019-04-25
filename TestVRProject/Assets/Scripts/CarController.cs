@@ -1,77 +1,159 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//from here https://www.youtube.com/watch?v=j6_SMdWeGFI&feature=youtu.be&t=1384
-//https://github.com/coderDarren/Unity3D-Cars/tree/master/Cars/Assets/Scripts
-public class CarController : MonoBehaviour
+//from tutorial: https://www.gamasutra.com/blogs/VivekTank/20180706/321374/Unity_Wheel_Collider_for_Motor_vehicle_Tutorial_2018.php
+[System.Serializable]
+public class WheelPair
 {
-    private float horizontalInput;
-    private float verticalInput;
-    private float steeringAngle;
+    public WheelCollider colliderLeftWheel, colliderRightWheel;
+    public Transform transformLeftWheel, transformRightWheel;
+    public bool hasMotor; //the wheel is connected with the motor
+    public bool canSteer; //something frontwheels can
+}
 
-    public WheelCollider cfrontLeftWheel, cfrontRightWheel;
-    public WheelCollider cbackLeftWheel, cbackRightWheel;
+    //from here https://www.youtube.com/watch?v=j6_SMdWeGFI&feature=youtu.be&t=1384
+    //https://github.com/coderDarren/Unity3D-Cars/tree/master/Cars/Assets/Scripts
+    public class CarController : MonoBehaviour
+{
+    private float steeringInput;
+    private float motorInput;
+    private float breakInput;
 
-    public Transform tfrontLeftWheel, tfrontRightWheel;
-    public Transform tbackLeftWheel, tbackRightWheel;
-
+    public List<WheelPair> wheelPairs;
     public Transform steeringWheel;
+
+    private Quaternion steeringWheelInitial;
+    public float steeringWheelMaxTurnAngle = 30;
 
     public float maxSteerAngle = 30; //rotation of the front wheels to left/right
     public float motorForce = 50;
+    public float brakeForce = 1e+5f;
+    public float decelerationForce = 1e+5f;
 
-    //WheelCollider.brakeTorque
-
-
+    
+    public void Start()
+    {
+        steeringWheelInitial = steeringWheel.localRotation;
+    }
+    
     public void GetInput()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
+        steeringInput = Input.GetAxis("Horizontal");
+        motorInput = Input.GetAxis("Vertical");
+        
+        if (Input.GetKey(KeyCode.Space)) breakInput = brakeForce;
+        else breakInput = 0f;
     }
 
 
-    private void Steer()
+    private void Steer(WheelPair wheelPair)
     {
-        steeringAngle = maxSteerAngle * horizontalInput;
-        cfrontLeftWheel.steerAngle = steeringAngle;
-        cfrontRightWheel.steerAngle = steeringAngle;
-
+       float steeringAngle = maxSteerAngle * steeringInput;
+        wheelPair.colliderLeftWheel.steerAngle = steeringAngle;
+        wheelPair.colliderRightWheel.steerAngle = steeringAngle;
   
-       steeringWheel.localRotation = Quaternion.Euler(0f, 270f * horizontalInput, 0f);
+       
     }
 
-    private void Accelerate()
+    //let the motor force do its stuff
+    private void Accelerate(WheelPair wheelPair)
     {
-        cfrontLeftWheel.motorTorque = motorForce * verticalInput;
-        cfrontRightWheel.motorTorque = motorForce * verticalInput;
-        cbackLeftWheel.motorTorque = motorForce * verticalInput;
-        cbackRightWheel.motorTorque = motorForce * verticalInput;
+        float currentMotorForce = motorForce * motorInput;
+        wheelPair.colliderLeftWheel.motorTorque = currentMotorForce;
+        wheelPair.colliderRightWheel.motorTorque = currentMotorForce;
     }
-
-
-    //rotate the wheel
-    private void UpdateWheelePose( WheelCollider collider, Transform transform)
+    //at the moment a fixed value .... later with terrain value or something else?
+    private void Decelerate(WheelPair wheelPair)
     {
-        Vector3 pos = transform.position;
-        Quaternion quat = transform.rotation;
-
-        //set the positon and quaternion
-        collider.GetWorldPose(out pos, out quat);
-
-        transform.position = pos;
-        transform.rotation = quat;
+        wheelPair.colliderLeftWheel.brakeTorque = decelerationForce;
+        wheelPair.colliderRightWheel.brakeTorque = decelerationForce;
     }
+
+        //use brake
+        private void Brake(WheelPair wheelPair)
+    {
+        wheelPair.colliderLeftWheel.brakeTorque = breakInput;
+        wheelPair.colliderRightWheel.brakeTorque = breakInput;
+    }
+
+
+    //rotate the wheel while the car is moving (animation)
+    private void UpdateWheelPairPose(WheelPair wheelPair)
+    {
+        Vector3 lPos = wheelPair.transformLeftWheel.position;
+        Vector3 rPos = wheelPair.transformRightWheel.position;
+
+        Quaternion lQuat = wheelPair.transformLeftWheel.rotation;
+        Quaternion rQuat = wheelPair.transformRightWheel.rotation;
+
+        wheelPair.colliderLeftWheel.GetWorldPose(out lPos, out lQuat);
+        wheelPair.colliderRightWheel.GetWorldPose(out rPos, out rQuat);
+
+        wheelPair.transformLeftWheel.position = lPos;
+        wheelPair.transformRightWheel.position = rPos;
+
+        wheelPair.transformLeftWheel.rotation = lQuat;
+        wheelPair.transformRightWheel.rotation = rQuat;
+    }
+
+    //note steering wheel is still rotating around ...
+
+    private void UpdateSteeringWheel()
+    {
+        //rotate the steering wheel
+        Debug.Log("wheel: " + steeringInput);
+        float angle = steeringInput * steeringWheelMaxTurnAngle;
+        //rot.y = inputi;
+      //  if(angle > -steeringWheelMaxTurnAngle && angle < steeringWheelMaxTurnAngle)
+             steeringWheel.Rotate(0, angle, 0);
+      
+    }
+
+
+    //https://docs.unity3d.com/ScriptReference/Gyroscope.html
+    // The Gyroscope is right-handed.  Unity is left handed.
+    // Make the necessary change to the object.
+
+
+    /* 
+     * Android: Gravity, Linear Acceleration, Rotation Vector. More information.
+       iOS: Gyroscope, Device-Motion. More information.
+     */
+    void GyroSensorInput()
+    {
+        if (Input.gyro.enabled) {
+            //best option? https://www.youtube.com/watch?v=0Dqazn653v8
+            Vector3 rotationRate = Input.gyro.rotationRate;
+
+            //other options
+            Vector3 a = Input.gyro.userAcceleration; //acceleration to match the side-to-side acceleration of the smartphone
+            Vector3 b = Input.gyro.gravity;
+            Quaternion q = Input.gyro.attitude;
+
+            //careful:
+            Quaternion quaternionForUnity = new Quaternion(q.x, q.y, -q.z, -q.w);
+            transform.rotation = quaternionForUnity;
+        }
+    }
+   
+
+
 
     private void FixedUpdate()
     {
         GetInput();
-        Steer();
-        Accelerate();
+        
+        UpdateSteeringWheel();
 
-        UpdateWheelePose(cfrontLeftWheel, tfrontLeftWheel);
-        UpdateWheelePose(cfrontRightWheel, tfrontRightWheel);
-        UpdateWheelePose(cbackLeftWheel, tbackLeftWheel);
-        UpdateWheelePose(cbackRightWheel, tbackRightWheel);
+        for (int i = 0, len = wheelPairs.Count; i < len; ++i) { 
+            if(wheelPairs[i].canSteer) Steer(wheelPairs[i]);
+            if (wheelPairs[i].hasMotor) Accelerate(wheelPairs[i]);
+            Decelerate(wheelPairs[i]);
+            Brake(wheelPairs[i]);
+
+            UpdateWheelPairPose(wheelPairs[i]);
+        }
     }
 }
