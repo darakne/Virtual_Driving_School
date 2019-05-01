@@ -6,9 +6,7 @@
 Assets/AssetStoreTools*
 
 # Things we do not want
-Assets/Models/
-Assets/TerrainTool/
-Assets/Textures/
+
 
 # Visual Studio cache directory
 .vs/
