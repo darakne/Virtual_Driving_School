@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 695963478}
   - component: {fileID: 695963477}
   m_Layer: 0
-  m_Name: glass_side_L
+  m_Name: door_front_mirror_glass_plane_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -509,12 +509,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695963475}
   m_LocalRotation: {x: -0.5673765, y: -0.42200002, z: 0.42200008, w: -0.5673763}
-  m_LocalPosition: {x: 0.16600038, y: 0.14369997, z: -0.11460116}
-  m_LocalScale: {x: 0.01366387, y: 1, z: 0.009403315}
+  m_LocalPosition: {x: 0.1625, y: 0.1418, z: -0.1157}
+  m_LocalScale: {x: 0.020035353, y: 1.3679606, z: 0.018378163}
   m_Children:
   - {fileID: 1378875700}
   m_Father: {fileID: 851519048}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 286.718}
 --- !u!64 &695963477
 MeshCollider:
@@ -645,10 +645,10 @@ Transform:
   m_GameObject: {fileID: 851884640}
   m_LocalRotation: {x: -0.0000000298024, y: -5.8027504e-15, z: -1.7293589e-22, w: 1}
   m_LocalPosition: {x: 0.5403849, y: 0.1581339, z: -0.01572845}
-  m_LocalScale: {x: 0.9999999, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 851519046}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &851519042
 Transform:
@@ -662,7 +662,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 851519048}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &851519044
 Transform:
@@ -689,9 +689,9 @@ Transform:
   m_LocalPosition: {x: -0.64360064, y: -0.18061006, z: 0.75000006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 851519040}
   - {fileID: 769202817916510920}
   - {fileID: 1130778049}
-  - {fileID: 851519040}
   m_Father: {fileID: 6570761847441247745}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -706,9 +706,9 @@ Transform:
   m_LocalPosition: {x: -0.6436004, y: -0.18061006, z: -0.7500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 851519042}
   - {fileID: 6201835688591541611}
   - {fileID: 695963476}
-  - {fileID: 851519042}
   m_Father: {fileID: 6570761847441247745}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1365,7 +1365,7 @@ GameObject:
   - component: {fileID: 1130778051}
   - component: {fileID: 1130778050}
   m_Layer: 0
-  m_Name: glass_side_R
+  m_Name: door_front_mirror_glass_plane_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1379,12 +1379,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130778048}
   m_LocalRotation: {x: -0.42474863, y: -0.5653217, z: 0.56532174, w: -0.42474866}
-  m_LocalPosition: {x: 0.154, y: 0.141, z: 0.121}
-  m_LocalScale: {x: 0.013663888, y: 1, z: 0.00940332}
+  m_LocalPosition: {x: 0.1538, y: 0.141, z: 0.1203}
+  m_LocalScale: {x: 0.019770838, y: 1.06, z: 0.018055027}
   m_Children:
   - {fileID: 2071676532}
   m_Father: {fileID: 851519046}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 253.838}
 --- !u!64 &1130778050
 MeshCollider:
@@ -1490,7 +1490,7 @@ GameObject:
   - component: {fileID: 1378875700}
   - component: {fileID: 1378875701}
   m_Layer: 0
-  m_Name: LeftMirrorCamera
+  m_Name: door_front_mirror_camera_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2314,7 +2314,7 @@ GameObject:
   - component: {fileID: 2071676532}
   - component: {fileID: 2071676533}
   m_Layer: 0
-  m_Name: RightMirrorCamera
+  m_Name: door_front_mirror_camera_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2518,7 +2518,7 @@ Transform:
   m_LocalScale: {x: 0.9999999, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 851519046}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1668501453933680493
 Transform:
@@ -2611,7 +2611,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 851519048}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &6351153912542577068
 MeshRenderer:
@@ -2984,8 +2984,9 @@ MonoBehaviour:
     hasMotor: 1
     canSteer: 0
   steeringWheel: {fileID: 6570761847441247765}
-  steeringWheelMaxTurnAngle: 30
-  maxSteerAngle: 30
+  steeringWheelTurningSpeed: 100
+  maxSteeringWheelAngle: 300
+  maxSteerAngle: 60
   motorForce: 500
   brakeForce: 100000
   decelerationForce: 100000

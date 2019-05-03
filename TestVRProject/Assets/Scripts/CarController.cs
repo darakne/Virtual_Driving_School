@@ -23,19 +23,19 @@ public class WheelPair
 
     public List<WheelPair> wheelPairs;
     public Transform steeringWheel;
+    public float steeringWheelTurningSpeed = 100;
+    public float maxSteeringWheelAngle = 270;
 
-    private Quaternion steeringWheelInitial;
-    public float steeringWheelMaxTurnAngle = 30;
 
     public float maxSteerAngle = 30; //rotation of the front wheels to left/right
-    public float motorForce = 50;
+    public float motorForce = 500;
     public float brakeForce = 1e+5f;
     public float decelerationForce = 1e+5f;
 
     
     public void Start()
     {
-        steeringWheelInitial = steeringWheel.localRotation;
+    
     }
     
     public void GetInput()
@@ -103,12 +103,15 @@ public class WheelPair
     private void UpdateSteeringWheel()
     {
         //rotate the steering wheel
-        Debug.Log("wheel: " + steeringInput);
-        float angle = steeringInput * steeringWheelMaxTurnAngle;
-        //rot.y = inputi;
-      //  if(angle > -steeringWheelMaxTurnAngle && angle < steeringWheelMaxTurnAngle)
-             steeringWheel.Rotate(0, angle, 0);
-      
+       // Debug.Log("steering input: " + steeringInput);
+
+        float angle = steeringInput* steeringWheelTurningSpeed + steeringWheel.localRotation.y;
+        //"cut" the rotation between 2 values (+-maxSteeringWheelAngle)
+        float angle2 = Mathf.Clamp(angle, -maxSteeringWheelAngle, maxSteeringWheelAngle);
+        //Debug.Log("angle2: " + angle2);
+        //got this by playing around
+         steeringWheel.localRotation = Quaternion.Euler(angle2 +90,0f,  -90f);
+     
     }
 
 
