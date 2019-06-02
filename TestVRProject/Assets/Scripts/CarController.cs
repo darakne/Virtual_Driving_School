@@ -7,7 +7,7 @@ using UnityEngine;
 [System.Serializable]
 public class WheelPair
 {
-    public WheelCollider colliderLeftWheel, colliderRightWheel;
+    public WheelCollider colliderLeftWheel, colliderRightWheel; 
     public Transform transformLeftWheel, transformRightWheel;
     public bool hasMotor; //the wheel is connected with the motor
     public bool canSteer; //something frontwheels can
@@ -17,7 +17,7 @@ public class WheelPair
     //https://github.com/coderDarren/Unity3D-Cars/tree/master/Cars/Assets/Scripts
     public class CarController : MonoBehaviour
 {
-    private float steeringInput;
+    private float steeringInput;    
     private float motorInput;
     private float breakInput;
 
@@ -51,8 +51,8 @@ public class WheelPair
     private void Steer(WheelPair wheelPair)
     {
        float steeringAngle = maxSteerAngle * steeringInput;
-        wheelPair.colliderLeftWheel.steerAngle = steeringAngle;
-        wheelPair.colliderRightWheel.steerAngle = steeringAngle;
+       wheelPair.colliderLeftWheel.steerAngle = steeringAngle;
+       wheelPair.colliderRightWheel.steerAngle = steeringAngle;
   
        
     }
@@ -82,7 +82,7 @@ public class WheelPair
     //rotate the wheel while the car is moving (animation)
     private void UpdateWheelPairPose(WheelPair wheelPair)
     {
-        Vector3 lPos = wheelPair.transformLeftWheel.position;
+        Vector3 lPos = wheelPair.transformLeftWheel.position; 
         Vector3 rPos = wheelPair.transformRightWheel.position;
 
         Quaternion lQuat = wheelPair.transformLeftWheel.rotation;
