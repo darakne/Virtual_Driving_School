@@ -2324,6 +2324,7 @@ MonoBehaviour:
   offsetY: 0
   transport: {fileID: 1909165054}
   dontDestroyOnLoad: 1
+  clientScene: ClientScene
 --- !u!1 &1996421916
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,9 +4,11 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
+using Mirror;
 
-namespace Mirror
-{
+
+/* The Frankenstein-Monster-Mix of NetworkManager and NetworkManagerHUD */
     public class MyNetworkManagerHUD : MonoBehaviour
     {
         MyServer theserver;
@@ -15,15 +17,13 @@ namespace Mirror
         public bool showGUI = true;
         public int offsetX;
         public int offsetY;
-
-        CrossPlatformInputManager.VirtualAxis m_HVAxis;
-        string horizontalAxisName = "Horizontal";
-        CrossPlatformInputManager.VirtualAxis m_VVAxis;
-        string verticalAxisName = "Vertical";
-
         // transport layer
         [SerializeField] protected Transport transport;
         [FormerlySerializedAs("m_DontDestroyOnLoad")] public bool dontDestroyOnLoad = true;
+        [Scene]
+        [FormerlySerializedAs("ClientScene")] public string clientScene = "";
+        static UnityEngine.AsyncOperation loadingSceneAsync;
+
         MyNetworkManagerHUD singleton;
 
         void Awake()
@@ -143,10 +143,12 @@ namespace Mirror
                 {
                     ClientScene.Ready(NetworkClient.connection);
 
-                    if (ClientScene.localPlayer == null)
+                    /*if (ClientScene.localPlayer == null)
                     {
                     //    ClientScene.AddPlayer();
-                    }
+                    }*/
+                    ClientChangeScene(LoadSceneMode.Single, LocalPhysicsMode.None);
+
                 }
             }
 
@@ -168,29 +170,32 @@ namespace Mirror
             GUILayout.EndArea();
         }
 
-        /*
-        // Start is called before the first frame update
-        void Start()
+
+        public virtual void ClientChangeScene(LoadSceneMode sceneMode, LocalPhysicsMode physicsMode)
         {
-            if (NetworkServer.active)
+            if (string.IsNullOrEmpty(clientScene))
             {
-                m_HVAxis = new CrossPlatformInputManager.VirtualAxis(horizontalAxisName);
-                CrossPlatformInputManager.RegisterVirtualAxis(m_HVAxis);
-                m_VVAxis = new CrossPlatformInputManager.VirtualAxis(verticalAxisName);
-                CrossPlatformInputManager.RegisterVirtualAxis(m_VVAxis);
-                NetworkServer.Listen(25000);
-
-            NetworkServer.RegisterHandler<MyMessage>(ServerReceiveMessage);
+                Debug.LogError("ServerChangeScene empty scene name");
+                return;
             }
+
+           Debug.Log("Client changes scene " + clientScene);
+
+
+            LoadSceneParameters loadSceneParameters = new LoadSceneParameters(sceneMode, physicsMode);
+
+            loadingSceneAsync = SceneManager.LoadSceneAsync(clientScene, loadSceneParameters);
+
+            SceneMessage msg = new SceneMessage()
+            {
+                sceneName = clientScene,
+                sceneMode = loadSceneParameters.loadSceneMode,
+                physicsMode = loadSceneParameters.localPhysicsMode
+            };
+
         }
 
-        private void ServerReceiveMessage(NetworkConnection arg1, MyMessage message)
-        {
-            Debug.Log("Server is receiving message.");
-            m_HVAxis.Update(message.steeringInput);
-            m_VVAxis.Update(message.motorInput);
-        }
-        */
+
         void FixedUpdate()  {
             if (NetworkClient.isConnected && ClientScene.ready) {
                 MyMessage msg = new MyMessage();
@@ -205,4 +210,4 @@ namespace Mirror
  
         }
     }
-}
+

@@ -92,7 +92,7 @@ public class MyClient : MonoBehaviour
 
     void OnClientMyMessage(NetworkConnection conn, MyMessage msg)
     {
-        Debug.Log("Client got a my message!");
+        Debug.Log("Server gives me a mymessage!");
 
        
     }
