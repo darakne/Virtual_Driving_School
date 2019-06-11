@@ -8,4 +8,5 @@ public class MyMessage : MessageBase
     public float steeringInput;
     public float motorInput;
     public bool breakInput;
+    public string text;
 }

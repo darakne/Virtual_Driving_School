@@ -3,16 +3,15 @@
 using System.ComponentModel;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.Serialization;
 
 namespace Mirror
 {
-    [AddComponentMenu("Network/NetworkManagerHUD")]
-    [RequireComponent(typeof(NetworkManager))]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [HelpURL("https://vis2k.github.io/Mirror/Components/NetworkManagerHUD")]
     public class MyNetworkManagerHUD : MonoBehaviour
     {
-        NetworkManager manager;
+        MyServer theserver;
+        MyClient theclient;
+        public string initAdressTextField = "localhost";
         public bool showGUI = true;
         public int offsetX;
         public int offsetY;
@@ -22,9 +21,45 @@ namespace Mirror
         CrossPlatformInputManager.VirtualAxis m_VVAxis;
         string verticalAxisName = "Vertical";
 
+        // transport layer
+        [SerializeField] protected Transport transport;
+        [FormerlySerializedAs("m_DontDestroyOnLoad")] public bool dontDestroyOnLoad = true;
+        MyNetworkManagerHUD singleton;
+
         void Awake()
         {
-            manager = GetComponent<NetworkManager>();
+            InitializeSingleton();
+        }
+
+
+        void InitializeSingleton()
+        {
+            if (singleton != null && singleton == this)
+            {
+                return;
+            }
+
+            if (dontDestroyOnLoad)
+            {
+                if (singleton != null)
+                {
+                    Debug.LogWarning("Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will be destroyed.");
+                    Destroy(gameObject);
+                    return;
+                }
+                if (LogFilter.Debug) Debug.Log("NetworkManager created singleton (DontDestroyOnLoad)");
+                singleton = this;
+                if (Application.isPlaying) DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                if (LogFilter.Debug) Debug.Log("NetworkManager created singleton (ForScene)");
+                singleton = this;
+            }
+
+            // set active transport AFTER setting singleton.
+            // so only if we didn't destroy ourselves.
+            Transport.activeTransport = transport;
         }
 
         void OnGUI()
@@ -37,6 +72,7 @@ namespace Mirror
             {
                 if (!NetworkClient.active)
                 {
+                    /*
                     // LAN Host
                     if (Application.platform != RuntimePlatform.WebGLPlayer)
                     {
@@ -45,15 +81,20 @@ namespace Mirror
                             manager.StartHost();
                         }
                     }
-
+                    */
                     // LAN Client + IP
+                    GUILayout.BeginHorizontal();
+                    initAdressTextField = GUILayout.TextField(initAdressTextField);
+                    GUILayout.EndHorizontal();
+
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button("LAN Client"))
                     {
-                        manager.StartClient();
-                    }
-                    manager.networkAddress = GUILayout.TextField(manager.networkAddress);
-                    GUILayout.EndHorizontal();
+                        theclient = new MyClient();
+                        theclient.InitClient();
+                        theclient.networkAddress = initAdressTextField;
+                    }                   
+                    
 
                     // LAN Server Only
                     if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -63,16 +104,22 @@ namespace Mirror
                     }
                     else
                     {
-                        if (GUILayout.Button("LAN Server Only")) manager.StartServer();
+                        if (GUILayout.Button("LAN Server Only"))
+                        {
+                            theserver = new MyServer();
+                            theserver.InitServer();
+                            theserver.networkAddress = initAdressTextField;
+                        }
                     }
+                    GUILayout.EndHorizontal();
                 }
                 else
                 {
                     // Connecting
-                    GUILayout.Label("Connecting to " + manager.networkAddress + "..");
+                    GUILayout.Label("Connecting to " + theclient.networkAddress + "..");
                     if (GUILayout.Button("Cancel Connection Attempt"))
                     {
-                        manager.StopClient();
+                        theclient.StopClient();
                     }
                 }
             }
@@ -85,7 +132,7 @@ namespace Mirror
                 }
                 if (NetworkClient.isConnected)
                 {
-                    GUILayout.Label("Client: address=" + manager.networkAddress);
+                    GUILayout.Label("Client: address=" + theclient.networkAddress);
                 }
             }
 
@@ -98,18 +145,23 @@ namespace Mirror
 
                     if (ClientScene.localPlayer == null)
                     {
-                        ClientScene.AddPlayer();
+                    //    ClientScene.AddPlayer();
                     }
                 }
             }
 
             // stop
-            if (NetworkServer.active || NetworkClient.isConnected)
-            {
+            if (NetworkServer.active) {
                 GUILayout.Label("Connections: " + NetworkServer.connections.Count);
                 if (GUILayout.Button("Stop"))
                 {
-                    manager.StopHost();
+                    theserver.StopServer();
+                }
+            }
+            else if (NetworkClient.isConnected)  {
+                if (GUILayout.Button("Stop"))
+                {
+                    theclient.StopClient();
                 }
             }
 
@@ -138,19 +190,19 @@ namespace Mirror
             m_HVAxis.Update(message.steeringInput);
             m_VVAxis.Update(message.motorInput);
         }
-
-        void FixedUpdate()
-        {
-            if (NetworkClient.isConnected && ClientScene.ready)
-            {
+        */
+        void FixedUpdate()  {
+            if (NetworkClient.isConnected && ClientScene.ready) {
                 MyMessage msg = new MyMessage();
                 msg.steeringInput = Input.GetAxis("Horizontal");
                 msg.motorInput = Input.GetAxis("Vertical");
+                msg.text = "client message";
 
-                Debug.Log("Sending message now from client");
-                int channelId = 888;
-                NetworkClient.Send<MyMessage>(msg, channelId);
+               // Debug.Log("Sending message now from client");
+                theclient.Send(msg);
             }
-        }*/
+
+ 
+        }
     }
 }
