@@ -17,9 +17,9 @@ public class ClientControllerInput : NetworkBehaviour
      */
     public override void OnStartClient()
     {
-        networkInstanceID = (uint)Random.Range(0, 10);
+        networkInstanceID = 1; // (uint)Random.Range(0, 10);
         Debug.Log("Client " + networkInstanceID + " calls OnStartClient()");
-        if (this.isLocalPlayer) Debug.Log("It is NOT a local player.");
+        if (!this.isLocalPlayer) Debug.Log("It is NOT a local player.");
         // register client events, enable effects
     }
 
@@ -28,6 +28,7 @@ public class ClientControllerInput : NetworkBehaviour
      */
     public override void OnStartLocalPlayer()
     {
+        networkInstanceID = 0; // (uint)Random.Range(0, 10);
         Debug.Log("Client " + networkInstanceID + " calls OnStartLocalPlayer()");
         // register client events, enable effects
         if (this.isLocalPlayer) Debug.Log("It is a local player.");
@@ -38,6 +39,7 @@ public class ClientControllerInput : NetworkBehaviour
     [ClientCallback] // This code executes on the client, gathering input
     void FixedUpdate()
     {
+        if(isLocalPlayer)
         Debug.Log("Getting Input on Client Side: ");
         Debug.Log("gyrosensor supported: " +SystemInfo.supportsGyroscope);
         Debug.Log("Input acceleration: " + Input.acceleration);
