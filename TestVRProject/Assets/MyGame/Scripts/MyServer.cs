@@ -11,6 +11,9 @@ using Mirror;
 
 public class MyServer : MonoBehaviour
 {
+    //headless mode detection
+    public static bool isHeadless => SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
+    public int serverTickRate = 30;
     public bool isAtStartup = true;
     bool isNetworkActive=false;
     [FormerlySerializedAs("m_MaxConnections")] public int maxConnections = 2;
@@ -147,7 +150,7 @@ public class MyServer : MonoBehaviour
     void OnServerMyMessage(NetworkConnection conn, MyMessage msg)
     {
         Debug.Log("Server got a my message: " + msg.text);
-        GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(msg.steeringInput, msg.motorInput, msg.breakInput);
+       GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(msg.steeringInput, msg.motorInput, msg.breakInput);
     }
     
     #endregion

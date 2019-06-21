@@ -199,8 +199,9 @@ using Mirror;
         void FixedUpdate()  {
             if (NetworkClient.isConnected && ClientScene.ready) {
                 MyMessage msg = new MyMessage();
-                msg.steeringInput = Input.GetAxis("Horizontal");
-                msg.motorInput = Input.GetAxis("Vertical");
+            // GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(Input.acceleration.x, Input.acceleration.z, false);
+                 msg.steeringInput = Input.acceleration.x; // Input.GetAxis("Horizontal");
+                 msg.motorInput = Input.acceleration.z; // Input.GetAxis("Vertical");
                 msg.text = "client message";
 
                // Debug.Log("Sending message now from client");
