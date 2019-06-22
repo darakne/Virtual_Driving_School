@@ -1,0 +1,23 @@
+﻿//source: https://www.youtube.com/watch?v=eWfZrOE3K_Q
+Shader "Custom/MaskShader."
+ { 
+	Properties
+	{ 
+		_MainTex("Base (RGB)", 2D) = "white" {} 
+		_Mask("Culling Mask", 2D) = "white" {} 
+		_Cutoff("Alpha cutoff", Range(0,1)) = 0.1 
+	} 
+	SubShader
+	{ 
+			Tags {"Queue" = "Transparent"} 
+			Lighting Off 
+			ZWrite Off 
+			Blend SrcAlpha OneMinusSrcAlpha 
+			AlphaTest GEqual[_Cutoff] 
+			Pass 
+			{ 
+				SetTexture[_Mask] {combine texture} 
+				SetTexture[_MainTex] {combine texture, previous} 
+			} 
+	} 
+}
