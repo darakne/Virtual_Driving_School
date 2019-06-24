@@ -6,7 +6,7 @@ using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using System;
 
-public class TestScript : MonoBehaviour
+public class StartXR : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

@@ -9,7 +9,7 @@ using Mirror;
 
 
 /* The Frankenstein-Monster-Mix of NetworkManager and NetworkManagerHUD */
-    public class MyNetworkManagerHUD : MonoBehaviour
+    public class MyNetworkManager : MonoBehaviour
     {
         MyServer theserver;
         MyClient theclient;
@@ -24,7 +24,7 @@ using Mirror;
         [FormerlySerializedAs("ClientScene")] public string clientScene = "";
         static UnityEngine.AsyncOperation loadingSceneAsync;
 
-        MyNetworkManagerHUD singleton;
+        MyNetworkManager singleton;
 
         void Awake()
         {
@@ -32,7 +32,7 @@ using Mirror;
         }
 
 
-        void InitializeSingleton()
+        private void InitializeSingleton()
         {
             if (singleton != null && singleton == this)
             {
@@ -62,6 +62,71 @@ using Mirror;
             Transport.activeTransport = transport;
         }
 
+    public Transport GetActiveTransport()
+    {
+        return Transport.activeTransport;
+    }
+
+    public void InitServer(string networkAdress)
+    {
+        if (!NetworkServer.active)
+        {
+            initAdressTextField = networkAdress;
+             theserver = new MyServer();
+            theserver.InitServer(networkAdress);
+             
+        }
+    }
+
+    public int CountServerConnections()
+    {
+        return NetworkServer.connections.Count;
+    }
+
+    public string GetServerNetworkAdress()
+    {
+        return theserver.networkAddress;
+    }
+
+    public void ShutdownServer()
+    {
+        if (NetworkServer.active)
+        {
+                theserver.StopServer();
+        }
+    }
+
+    public void InitClient(string networkAdress)
+    {
+        if (!NetworkClient.isConnected && !NetworkClient.active)
+        {
+            initAdressTextField = networkAdress;
+            theclient = new MyClient();
+            theclient.InitClient(networkAdress);
+
+        }
+
+        else Debug.Log("Network is already active. No init client.");
+    }
+
+    
+
+    public bool IsClientDisconnected()
+    {
+        return !theclient.ClientConnectedOnce();
+    }
+
+    public void ShutdownClient()
+    {
+        theclient.StopClient();
+    }
+
+    public string GetClientNetworkAdress()
+    {
+       return theclient.networkAddress;
+    }
+
+    /*
         void OnGUI()
         {
             if (!showGUI)
@@ -81,7 +146,7 @@ using Mirror;
                             manager.StartHost();
                         }
                     }
-                    */
+                    * /
                     // LAN Client + IP
                     GUILayout.BeginHorizontal();
                     initAdressTextField = GUILayout.TextField(initAdressTextField);
@@ -146,7 +211,9 @@ using Mirror;
                     /*if (ClientScene.localPlayer == null)
                     {
                     //    ClientScene.AddPlayer();
-                    }*/
+                    }
+                   * /
+
                     ClientChangeScene(LoadSceneMode.Single, LocalPhysicsMode.None);
 
                 }
@@ -169,7 +236,7 @@ using Mirror;
 
             GUILayout.EndArea();
         }
-
+    */
 
         public virtual void ClientChangeScene(LoadSceneMode sceneMode, LocalPhysicsMode physicsMode)
         {
@@ -196,19 +263,14 @@ using Mirror;
         }
 
 
-        void FixedUpdate()  {
-            if (NetworkClient.isConnected && ClientScene.ready) {
-                MyMessage msg = new MyMessage();
-            // GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(Input.acceleration.x, Input.acceleration.z, false);
-                 msg.steeringInput = Input.acceleration.x; // Input.GetAxis("Horizontal");
-                 msg.motorInput = Input.acceleration.z; // Input.GetAxis("Vertical");
-                msg.text = "client message";
-
-               // Debug.Log("Sending message now from client");
-                theclient.Send(msg);
-            }
-
- 
-        }
+    public void SendMessageToServer(MyMessage msg)
+    {
+        Debug.Log("Client sends message to server ...");
+        if (NetworkClient.isConnected && ClientScene.ready)
+            Debug.Log("client sends now ...");
+        theclient.Send(msg);
+        
+    }
+     
     }
 

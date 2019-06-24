@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using System;
+using TMPro;
 
 public class ServerButtonScript : MonoBehaviour
 {
@@ -52,12 +53,16 @@ public class ServerButtonScript : MonoBehaviour
     void ChangeSceneToServer()
     {
         Debug.Log("Hello serverbutton");
-        Debug.Log("XR Settings are: " + XRSettings.enabled);
+       // Debug.Log("XR Settings are: " + XRSettings.enabled);
 
         GameObject.FindWithTag("ClientButton").SetActive(false);
         // ToggleVR();
 
-    
+        MyNetworkManager networkManager = GameObject.Find("Network").GetComponent<MyNetworkManager>();
+        if (networkManager == null) Debug.Log("Networkmanager null");
+        TextMeshProUGUI networkAdressText = GameObject.Find("AdressInput_Text").GetComponent<TextMeshProUGUI>();
+        networkManager.InitServer(networkAdressText.text);
+    //    Debug.Log("Address: " + networkManager.GetServerNetworkAdress());
         SceneManager.LoadScene("SampleScene");
     }
 

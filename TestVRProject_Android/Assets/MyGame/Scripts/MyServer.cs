@@ -53,8 +53,16 @@ public class MyServer : MonoBehaviour
     */
 
 
-    public void InitServer()
+    public void InitServer(string newNetworkAddress)
     {
+
+        if (string.IsNullOrEmpty(newNetworkAddress))
+        {
+            Debug.LogError("Must set the Network Address field in the manager");
+            return;
+        }
+        networkAddress = newNetworkAddress;
+
         Debug.Log("Server starts to listen ...");
         NetworkServer.Listen(maxConnections);
         isAtStartup = false;
@@ -150,7 +158,12 @@ public class MyServer : MonoBehaviour
     void OnServerMyMessage(NetworkConnection conn, MyMessage msg)
     {
         Debug.Log("Server got a my message: " + msg.text);
-       GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(msg.steeringInput, msg.motorInput, msg.breakInput);
+        Debug.Log("steering: " + msg.steeringInput);
+        Debug.Log("motor: " + msg.motorInput);
+        Debug.Log("steering: " + msg.steeringInput);
+        Debug.Log("break: " + msg.breakInput);
+
+        GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(msg.steeringInput, msg.motorInput, msg.breakInput);
     }
     
     #endregion

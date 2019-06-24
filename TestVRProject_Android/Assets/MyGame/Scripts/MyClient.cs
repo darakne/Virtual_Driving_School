@@ -7,10 +7,12 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Mirror;
+
 public class MyClient : MonoBehaviour
 {
     public bool isAtStartup = true;
     bool isNetworkActive=false;
+    bool connected = false;
     NetworkClient theClient => NetworkClient.singleton;
     // transport layer
     [SerializeField] protected Transport transport;
@@ -29,9 +31,15 @@ public class MyClient : MonoBehaviour
         
 
     }*/
+
+    public bool ClientConnectedOnce()
+    {
+        return connected;
+    }
     
-    public void InitClient()
-    {   
+    public void InitClient(string newNetworkAddress)
+    {
+        Debug.Log("Init MyClient ...");
        // Transport.activeTransport = transport;
         isNetworkActive = true;
 
@@ -43,30 +51,37 @@ public class MyClient : MonoBehaviour
         NetworkClient.RegisterHandler<SceneMessage>(OnClientSceneInternal);
         NetworkClient.RegisterHandler<MyMessage>(OnClientMyMessage);
 
-        if (string.IsNullOrEmpty(networkAddress))
+        if (string.IsNullOrEmpty(newNetworkAddress))
         {
             Debug.LogError("Must set the Network Address field in the manager");
             return;
         }
-        if (LogFilter.Debug) Debug.Log("NetworkManager StartClient address:" + networkAddress);
+        networkAddress = newNetworkAddress;
+        //Debug.Log("MyClient address:" + networkAddress);
 
         NetworkClient.Connect(networkAddress);
+        Debug.Log("MyClient address:" + networkAddress);
 
         isAtStartup = false;
     }
 
 
+    public bool NetworkActive()
+    {
+        return isNetworkActive;
+    }
+
     #region Client Internal Message Handlers
     void OnClientConnectInternal(NetworkConnection conn, ConnectMessage message)
     {
         Debug.Log("NetworkManager.OnClientConnectInternal");
-
-       
+        connected = true;
     }
 
     void OnClientDisconnectInternal(NetworkConnection conn, DisconnectMessage msg)
     {
-        Debug.Log("NetworkManager.OnClientDisconnectInternal");
+        Debug.Log("MyClient.OnClientDisconnectInternal");
+        connected = false;
     }
 
     void OnClientNotReadyMessageInternal(NetworkConnection conn, NotReadyMessage msg)
