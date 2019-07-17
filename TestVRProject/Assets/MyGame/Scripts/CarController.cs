@@ -33,7 +33,7 @@ public class WheelPair
     public float decelerationForce = 1e+5f;
 
 
-    public void setInput(float new_steeringInput, float new_motorInput, bool new_breakInput)
+    public void SetInput(float new_steeringInput, float new_motorInput, bool new_breakInput)
     {
         steeringInput = new_steeringInput;
         motorInput = new_motorInput;
@@ -44,12 +44,13 @@ public class WheelPair
     }
 
 
-   /* 
+   
     public void Start()
     {
-    
+        MyNetworkManager n = MyNetworkManager.getInstance();
+        n.carController = this;
     }
-    */
+    
     public void GetInput()
     {
   /*

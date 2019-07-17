@@ -13,6 +13,6 @@ public class TempScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().setInput(Input.acceleration.x, Input.acceleration.z, false);
+        GameObject.Find("Cartoon_SportCar_B01").GetComponent<CarController>().SetInput(Input.acceleration.x, Input.acceleration.z, false);
     }
 }

@@ -27,9 +27,11 @@ public class GyroControl : MonoBehaviour
     }
     #endregion
     private Gyroscope gyro;
-    private bool gyroActive;
+    private bool gyroActive=false;
     private Quaternion rotation;
     public Camera cam;
+
+  
 
 
     private void Start()
@@ -37,7 +39,8 @@ public class GyroControl : MonoBehaviour
 		//cameraContainer = new GameObject("Camera Container");
 		//cameraContainer.transform.position = transform.position;
 		//transform.SetParent(cameraContainer.transform);
-        SetGyro();
+     
+        //  SetGyro();
 	}
 
 	private bool SetGyro() 
