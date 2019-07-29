@@ -14,12 +14,13 @@ public class MyNetworkManager : MonoBehaviour
         public bool initializationComplete = false;
         public string initAdressTextField;
         public int port = 7777;
+        private int touchMultiplier = -1; // used to drive the car forward/backwards; negative is forwards
 
   // transport layer
   //[FormerlySerializedAs("m_DontDestroyOnLoad")] public bool dontDestroyOnLoad = true;
     //    static UnityEngine.AsyncOperation loadingSceneAsync;
 
-        static MyNetworkManager singleton;
+        private static MyNetworkManager singleton;
 
         public CarController carController; //the CarController sets itself when loading the server specific scene
 
@@ -30,23 +31,22 @@ public class MyNetworkManager : MonoBehaviour
 
 
     void Awake()
+    {
+        if(singleton == null)
         {
-            InitializeSingleton();
+            singleton = this;
+           // DontDestroyOnLoad(this);
+        } 
+        else {
+            Destroy(this.gameObject);
         }
-
-    public static MyNetworkManager getInstance()
-    {
-        return singleton;
-    }
-        
+    }     
      
-
-    private void InitializeSingleton()
-    {
-            if (singleton != null && singleton == this)  return;
-            Debug.Log("NetworkManager created singleton (ForScene)");
-            singleton = this;  
+    public static MyNetworkManager getInstance()
+    {         
+            return singleton;
     }
+
 
     private void Start()
     {
@@ -57,7 +57,7 @@ public class MyNetworkManager : MonoBehaviour
             return;
         }
         Debug.Log("Loading Additive Scene");
-        StartCoroutine(LoadSceneAsync("StartScene", true));
+        StartCoroutine(LoadScene("StartScene", true));
     }
 
 
@@ -178,7 +178,19 @@ public void InitServer()
             {
                 Debug.Log("lastMessage.SteeringInput: " + Input.GetAxis("Horizontal"));
                 Debug.Log("lastMessage.MotorInput " + Input.GetAxis("Vertical"));
-             //   MyMessage msg = new MyMessage(2, Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), false);
+                //   MyMessage msg = new MyMessage(2, Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), false);
+                
+                if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+                {
+                    touchMultiplier *= -1;
+                }
+               
+                /*Touch myTouch = Input.GetTouch(0);
+                Touch[] myTouches = Input.touches;
+                for (int i = 0; i < Input.touchCount; i++)
+                {
+                }*/
+              //  MyMessage msg = new MyMessage(2, Input.acceleration.x, Input.acceleration.z * touchMultiplier, false);
                 MyMessage msg = new MyMessage(2, Input.acceleration.x, -Input.acceleration.z, false);
                 udpchat.Send(msg);
                 Debug.Log("Sending client input message.");

@@ -10,7 +10,8 @@ using HD;
 
 public class ServerButtonScript : MonoBehaviour
 {
-    MyNetworkManager networkManager;
+    private MyNetworkManager networkManager;
+
     private Button serverButton;
     public TextMeshProUGUI notificationText;
     private bool sceneNotChanged = true;
@@ -19,11 +20,11 @@ public class ServerButtonScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        networkManager = GameObject.Find("Network").GetComponent<MyNetworkManager>();
-        serverButton = GetComponent<Button>();
-        serverButton.onClick.AddListener(ChangeSceneToServer);
+        networkManager = MyNetworkManager.getInstance();
+       // serverButton = GetComponent<Button>();
+      //  serverButton.onClick.AddListener(ChangeSceneToServer);
     }
-
+    /*
     IEnumerator LoadDevice(string newDevice)
     {
         if (String.Compare(XRSettings.loadedDeviceName, newDevice, true) != 0)
@@ -56,18 +57,24 @@ public class ServerButtonScript : MonoBehaviour
         Debug.Log("active: " + XRSettings.isDeviceActive);
         Debug.Log("supported: " + XRSettings.supportedDevices);
     }
-
-    void ChangeSceneToServer()
+    */
+   public void ChangeSceneToServer()
     {
         Debug.Log("Hello serverbutton");
-       // Debug.Log("XR Settings are: " + XRSettings.enabled);
-
-        if (GameObject.FindWithTag("ClientButton") != null)
+        // Debug.Log("XR Settings are: " + XRSettings.enabled);
+        notificationText.text = "Initialising Server";
+        if (GameObject.FindWithTag("ClientButton") != null) {
+            Debug.Log("Client Button found and set false.");
             GameObject.FindWithTag("ClientButton").SetActive(false);
-       
-        if (networkManager == null) notificationText.text = "Networkmanager null";
-
-            notificationText.text = "Initialising Server";
+        }
+        if (networkManager == null)
+        {
+            networkManager = MyNetworkManager.getInstance();
+            Debug.Log("Networkmanager is null.");
+            notificationText.text = "Networkmanager null";
+            return; 
+        }
+           
 
             TextMeshProUGUI networkAdressText = GameObject.Find("AdressInput_Text").GetComponent<TextMeshProUGUI>();
             networkManager.InitServer();

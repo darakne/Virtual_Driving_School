@@ -14,36 +14,44 @@ public class ClientButtonScript : MonoBehaviour
     private Button clientButton;
     public TextMeshProUGUI notificationText;
     private bool phaseAlreadyCalled = false;
-    MyNetworkManager networkManager;
+    private MyNetworkManager networkManager;
     int lastKnownPhase = 0;
     // Start is called before the first frame update
     void Start()
     {
-        networkManager = GameObject.Find("Network").GetComponent<MyNetworkManager>();
+        //networkManager = GameObject.Find("/Network").GetComponent<MyNetworkManager>();
+        networkManager = MyNetworkManager.getInstance();
 
-        clientButton = GetComponent<Button>();
-        clientButton.onClick.AddListener(ChangeSceneToClient);
+      //  clientButton = GetComponent<Button>();
+      //  clientButton.onClick.AddListener(ChangeSceneToClient);
     }
 
 
-    void ChangeSceneToClient()
+    public void ChangeSceneToClient()
     {
         Debug.Log("Hello clientbutton");
+        notificationText.text = "Init Client ...";
 
-       
-
+        if (GameObject.FindWithTag("ServerButton") != null)
+        {
+            Debug.Log("Server Button found and set false.");
+            GameObject.FindWithTag("ServerButton").SetActive(false);
+        }
+        if (networkManager == null)
+        {
+            Debug.Log("Networkmanager is null.");
+            notificationText.text = "Networkmanager null";
+        }
         TextMeshProUGUI networkAdressText = GameObject.Find("AdressInput_Text").GetComponent<TextMeshProUGUI>();
         Debug.Log("address text: " + networkAdressText.text);
-
-        notificationText.text = "Init Client ...";
+       
         networkManager.InitClient(networkAdressText.text);
 
 
         // Debug.Log("Address: " + networkManager.GetClientNetworkAdress());
 
         //  Debug.Log("Is disconnect: " + disconnected);
-        if (GameObject.FindWithTag("ServerButton") != null)
-            GameObject.FindWithTag("ServerButton").SetActive(false);
+     
 
     //    bool waiting = networkManager.GetUDPChat().ConnectAsClient(notificationText.text);
         //SceneManager.LoadScene("ClientScene");

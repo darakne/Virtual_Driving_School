@@ -648,8 +648,8 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: MIRROR;MIRROR_1726_OR_NEWER;MIRROR_3_0_OR_NEWER;IGNORANCE;IGNORANCE_1;IGNORANCE_1_2
-    7: MIRROR;MIRROR_1726_OR_NEWER;MIRROR_3_0_OR_NEWER;IGNORANCE;IGNORANCE_1;IGNORANCE_1_2
+    1: MIRROR;MIRROR_1726_OR_NEWER;MIRROR_3_0_OR_NEWER
+    7: MIRROR;MIRROR_1726_OR_NEWER;MIRROR_3_0_OR_NEWER
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
@@ -721,6 +721,7 @@ PlayerSettings:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
+    Collab: 1
     UNet: 1
   luminIcon:
     m_Name: 
@@ -744,7 +745,7 @@ PlayerSettings:
   cloudProjectId: 57dfea41-f8f4-41f6-aef7-93ac85f63466
   framebufferDepthMemorylessMode: 0
   projectName: TestVRProject
-  organizationId: dracylea
+  organizationId: uni-wien
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
